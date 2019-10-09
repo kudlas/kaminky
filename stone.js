@@ -27,8 +27,8 @@ class Stone {
         fill(this.getColor());
         circle(x, y, this.size);
         fill(240,5,5);
-        //textSize(20);
-        //text(this.id,x,y+20);
+        textSize(20);
+        text(this.id,x,y+20);
 
         if(this.isLast) {
             fill(10, 10, 200);

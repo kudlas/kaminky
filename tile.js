@@ -1,7 +1,7 @@
 class Tile {
 
     constructor(x, y) {
-        this.id = 0.5 * (x+y)*(x+y+1)+y; // pairing function
+        this.id = 0.5 * (x + y) * (x + y + 1) + y; // pairing function
         this.tileSize = tileSize;
         this.x = x;
         this.y = y;
@@ -48,25 +48,17 @@ class Tile {
         if (this.stone != null) {
 
             // you cant play with the last one
-            if(this.stone.isLast) return;
+            if (this.stone.isLast) return;
+            this.isClicked = true;
 
-            this.isClicked=true;
-
-            // posible move positions
-            if(!this.dontMove) {
-                let x = this.x;
-                let y = this.y;
-
-                let possibleTile = plan.getTile(x, y + (1 * this.stone.getDirection())); // plan[x][y + (1 * this.stone.getDirection())];
-
-                if (possibleTile !== null && possibleTile.stone === null) {
-                    possibleTile.setPossiblePlace();
-                }
+            let possibleTile = this.getMove(plan); //plan.getTile(x, y + (1 * this.stone.getDirection())); // plan[x][y + (1 * this.stone.getDirection())];
+            if (possibleTile !== null && possibleTile.stone === null) {
+                possibleTile.setPossiblePlace();
             }
 
             let jumps = plan.getPossibleJumps(this.x, this.y);
 
-            jumps.forEach(jump =>{
+            jumps.forEach(jump => {
                 jump.landingTile.setPossiblePlace();
                 jump.landingTile.stoneToChange = jump.jumpedStone;
             });
@@ -74,12 +66,22 @@ class Tile {
         }
     }
 
+    getMove(plan) {
+        if (!this.dontMove) {
+            let x = this.x;
+            let y = this.y;
+
+            return plan.getTile(x, y + (this.stone.getDirection()));
+        } else
+            return null;
+    }
+
     setPossiblePlace() {
         this.isPossiblePlace = true;
     }
 
     unclick() {
-        this.isClicked=false;
+        this.isClicked = false;
         this.isPossiblePlace = false;
         this.stoneToChange = null;
         this.dontMove = false;
@@ -87,11 +89,11 @@ class Tile {
 
     getBgColor() {
         let ret = this.defaultBg;
-        if(this.isClicked) {
+        if (this.isClicked) {
             ret = this.activeBg;
         }
 
-        if(this.isPossiblePlace) {
+        if (this.isPossiblePlace) {
             ret = this.placeBg;
         }
 
@@ -101,7 +103,7 @@ class Tile {
     draw(strokeCol) {
         let size = this.tileSize;
         stroke(strokeCol);
-        fill( this.getBgColor() );
+        fill(this.getBgColor());
         rect(this.x * size, this.y * size, size, size);
 
         if (this.stone !== null) {
@@ -113,7 +115,12 @@ class Tile {
 
         fill(0, 255, 0);
         textSize(32);
-        //this.id, this.x * size + (size / 3), this.y * size + (size / 2));
+        text(this.id, this.x * size + (size / 3), this.y * size + (size / 2));
+        if(this.stone !==null) {
+            fill(0, 0, 240);
+            textSize(12);
+            text(this.stone.side, this.x * size + (size / 3) * 2, this.y * size );
+        }
 
     }
 

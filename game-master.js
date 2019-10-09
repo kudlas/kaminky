@@ -31,12 +31,15 @@ class GameMaster {
 
             }
         }
+
+        this.ai.beginTurn(this.turn);
     }
 
     // při označení kamene udělat pole možných pohybů a v clicku ho jen prohledávat?
     click(x, y) {
-
         let tile = this.plan.getTile(Math.floor(x / tileSize), Math.floor(y / tileSize));
+
+        console.log("This tile has been clicked: ", tile.id);
 
         if(tile===null) return;
 
@@ -70,6 +73,7 @@ class GameMaster {
                     removeTile.removeStone();
                     tile.dontMove = true;
                     tile.clicked(this.plan);
+                    this.ai.beginTurn();
                     return;
                 } else
                 {
@@ -84,8 +88,8 @@ class GameMaster {
             removeTile.removeStone();
             this.unclickTiles();
 
-            this.ai.turn();
             this.turn = !this.turn;
+            this.ai.beginTurn(this.turn);
         }
     }
 
@@ -98,6 +102,7 @@ class GameMaster {
     }
 
     unclickTiles() {
+
         this.plan.allTiles.forEach(function (i) {
             i.unclick();
         });
